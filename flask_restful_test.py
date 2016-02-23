@@ -68,5 +68,6 @@ api.add_resource(GetWeb, '/remove') # 设定路由
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    #app.run(host='0.0.0.0', port=8080)
+    #app.run(debug=True)
+    app.run(host='123.56.249.33', port=8080)
+
