@@ -1,0 +1,66 @@
+﻿<!DOCTYPE HTML>
+<html>
+   <head>
+      <meta http-equiv="content-type" content="text/html;charset=utf-8">
+	  <script type="text/javascript" src="jquery.min.js"></script>
+	  <title>排除搭配方案入库</title>
+      <style>
+	     *{margin:0;padding:0;}
+		 a{text-decoration:none;}
+		 #wrapper{min-width:1000px;}
+		 #wrapper .panel{width:700px;margin:30px auto;border:1px solid #ddd;min-height:100px;padding:10px;box-sizing:padding-box;}
+		 #wrapper .panel input{width:150px;border:1px solid #ddd;height:23px;line-height:23px;padding:0 2px;}
+		 #wrapper .panel a{color:#000;font-size:20px;font-weight:bold;} 
+		 .prevs{margin:10px 0 0 70px;}
+		 button{border:1px solid #ddd;padding:2px 4px;margin-top:20px;cursor:pointer;}
+	  </style>
+	  <script>
+
+	     window.onload = function(){
+		     var btn = document.getElementById('add');
+			 var iOnes = document.getElementById('ones');
+			 var subBtn = document.getElementsByTagName('button')[0];
+			 btn.onclick = function(){
+			     var iP = document.createElement('p');
+			     var iInput = document.createElement('input');
+				 iP.className='prevs';
+				 
+				 iP.appendChild(iInput);
+				 iOnes.appendChild(iP);
+			 }
+			 subBtn.onclick = function(){
+			     var iInputs = document.getElementsByTagName('input');
+				 var datas = '';
+				 for(var i = 0 ;i<iInputs.length; i++){
+				    datas+=iInputs[i].value+(i!=iInputs.length-1?',':'');
+				 }
+				 $.get("http://123.56.249.33:8080/commodiyt",{"commodiyt":datas},function(data){
+				     if(data.state==1){
+
+                                         alert('添加成功');
+                                     }else{
+                                         alert('添加失败');
+
+                                                   }
+				 });
+			     
+			 }
+			 
+		 };
+	  
+	  </script>
+	 
+   </head>
+   <body> 
+	 <div id="wrapper">
+        <div class="panel">
+		  <p id='ones'> 商品ID： <input type='text' /> </p>
+		  
+		  <p class="prevs"><input type='text' /> <a id="add" href="javascript:;">+</a></p>
+		  <button>提交</button>
+		
+		</div>
+	 
+	 </div>
+   </body>
+</html>
