@@ -16,7 +16,7 @@ datas = {}
 
 class GetWeb(restful.Resource):
     def get(self):
-        return render_template('/templates/commodity.html')
+        return render_template('/commodity.html')
 
 class HelloWorld(restful.Resource):
     def get(self): #实现了get方法
