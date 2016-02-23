@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pymysql.cursors
 
 connection = pymysql.connect(host='123.56.141.251',
