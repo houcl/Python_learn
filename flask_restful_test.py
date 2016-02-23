@@ -11,6 +11,9 @@ api = restful.Api(app)# 生成
 parser = reqparse.RequestParser()
 parser.add_argument('commodiyt', type=str, help='我也不知道说啥')
 
+@app.route('/index')
+def index():
+    return render_template('/commodity.html')
 
 datas = {}
 
