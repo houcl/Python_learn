@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask, request
 from flask.ext import restful
 from flask.ext.restful import Resource, Api,reqparse
