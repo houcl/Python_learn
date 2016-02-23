@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from flask import Flask, request, render_template
 from flask.ext import restful
 from flask.ext.restful import Resource, Api,reqparse
@@ -15,6 +13,10 @@ parser.add_argument('commodiyt', type=str, help='我也不知道说啥')
 
 datas = {}
 
+class GetWeb(restful.Resource):
+    def get(self):
+        return render_template('/templates/commodity.html')
+
 class HelloWorld(restful.Resource):
     def get(self): #实现了get方法
         qwe= "htllo world"
@@ -27,7 +29,6 @@ class GetCommdityID(restful.Resource):
 
         print(commodiyt)
 
-
         self.mysqlDeal = mysql_deal.MysqlDeal()
         #字符串解析
         
@@ -38,9 +39,10 @@ class GetCommdityID(restful.Resource):
 
         #调用数据库链接，添加数据
         r = self.mysqlDeal.insert_(data)
+        rt = {"state":"%s"%r}
 
-        return r
-
+        return rt
+    
     def post(self):
         args = parser.parse_args()
         self.mysqlDeal = mysql_deal.MysqlDeal()
@@ -54,20 +56,16 @@ class GetCommdityID(restful.Resource):
 
         #调用数据库链接，添加数据
         r = self.mysqlDeal.insert_(data)
+        rt = {"state":"%s"%r}
 
-        return r
-
-class GetWeb(restful.Resource):
-    def get(self): #实现了get方法
-        return render_template('templates/commodity.html')
+        return rt
 
 
 api.add_resource(HelloWorld, '/') # 设定路由
 api.add_resource(GetCommdityID, '/commodiyt') # 设定路由
-api.add_resource(GetWeb, '/remove') # 设定路由
+api.add_resource(GetWeb, '/getweb') # 设定路由
 
 
 if __name__ == '__main__':
     #app.run(debug=True)
     app.run(host='123.56.249.33', port=8080)
-
