@@ -3,8 +3,7 @@ import pyodbc
 
 
 connection = pyodbc.connect(
-    'DRIVER={FreeTDS};SERVER=qds185861603.my3w.com;DATABASE=qds185861603_db;UID=qds185861603;PWD=qwer1234')
-    #'DRIVER={SQL Server};SERVER=qds185861603.my3w.com;DATABASE=qds185861603_db;UID=qds185861603;PWD=qwer1234')
+    'DRIVER={SQL Server};SERVER=qds185861603.my3w.com;port=1433;DATABASE=qds185861603_db;UID=qds185861603;PWD=qwer1234;TDS_Version=8.0;')
 
 class MSsqlDeal(object):
 
