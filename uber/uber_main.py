@@ -27,8 +27,8 @@ uber_msg_headers = {
 datas = {}
 
 # 定义请求的数据内容
-uber_msg_data = {"username":"13611219600","pageNo":1,"pageSize":10,"_ApplicationId":"jr33ks0cxx959koggypfvdaenvrv1ir0jtv4q37qwuzes8s4","_ApplicationKey":"jql3k3dgaerg4dsa81tntklw07pz4hb4yg1s2thmxxa0ty0v","_ClientVersion":"js0.5.1","_InstallationId":"3c2bd453-7000-11fd-2147-69f22400d991"}
-
+#uber_msg_data = {"username":"13611219600","pageNo":1,"pageSize":10,"_ApplicationId":"jr33ks0cxx959koggypfvdaenvrv1ir0jtv4q37qwuzes8s4","_ApplicationKey":"jql3k3dgaerg4dsa81tntklw07pz4hb4yg1s2thmxxa0ty0v","_ClientVersion":"js0.5.1","_InstallationId":"3c2bd453-7000-11fd-2147-69f22400d991"}
+uber_msg_data = {"username":"18511956456","pageNo":1,"pageSize":10,"_ApplicationId":"jr33ks0cxx959koggypfvdaenvrv1ir0jtv4q37qwuzes8s4","_ApplicationKey":"jql3k3dgaerg4dsa81tntklw07pz4hb4yg1s2thmxxa0ty0v","_ClientVersion":"js0.5.1","_InstallationId":"b5eea16b-e31a-49d1-ecc2-ddb88c0fdc46","_SessionToken":"oxim2j6ypurh7p8gzom0i5zx1"}
 
 uber_msg_url = "https://cn.avoscloud.com/1.1/functions/mobile_getMsg"
 
