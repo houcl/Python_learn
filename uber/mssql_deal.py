@@ -3,8 +3,8 @@ import pyodbc
 
 
 connection = pyodbc.connect(
-    'DRIVER={SQL Server};SERVER=qds185861603.my3w.com;port=1433;DATABASE=qds185861603_db;UID=qds185861603;PWD=qwer1234;TDS_Version=8.0;')
-	#'DRIVER={SQL Server};SERVER=qds185861603.my3w.com;DATABASE=qds185861603_db;UID=qds185861603;PWD=qwer1234')
+    #'DRIVER={SQL Server};SERVER=qds185861603.my3w.com;port=1433;DATABASE=qds185861603_db;UID=qds185861603;PWD=qwer1234;TDS_Version=8.0;')
+    'DRIVER={SQL Server};SERVER=qds185861603.my3w.com;DATABASE=qds185861603_db;UID=qds185861603;PWD=qwer1234')
 	
 class MSsqlDeal(object):
 
@@ -37,10 +37,20 @@ class MSsqlDeal(object):
         with connection.cursor() as cursor:
             #sql = "INSERT INTO `removesingle` (`CommodityIDList`) VALUES (%s)"
             #sql = "SELECT * FROM [dbo].[uber_msg] WHERE UMsgID = ?"
-            sql = ("INSERT INTO [dbo].[uber_msg] "
-                   "([ObjectID], [Title], [TopNews], [MsgRead], [SendTime], [UCreatedAt], [UUpdatedAt], [CreateTime], [UpdateTime], [PicUrl])"
-                   "VALUES (?,?,?,?,?,?,?,?,?,?)")
-            data = (datas["ObjectID"],datas["Title"],datas["TopNews"],datas["MsgRead"],datas["SendTime"],datas["UCreatedAt"],datas["UUpdatedAt"],datas["CreateTime"],datas["UpdateTime"],datas["PicUrl"])
+            sql = ""
+            data = ""
+            
+            if datas["Table"] == "msg":
+                sql = ("INSERT INTO [dbo].[uber_msg] "
+                       "([ObjectID], [Title], [TopNews], [MsgRead], [SendTime], [UCreatedAt], [UUpdatedAt], [CreateTime], [UpdateTime], [PicUrl])"
+                       "VALUES (?,?,?,?,?,?,?,?,?,?)")
+                data = (datas["ObjectID"],datas["Title"],datas["TopNews"],datas["MsgRead"],datas["SendTime"],datas["UCreatedAt"],datas["UUpdatedAt"],datas["CreateTime"],datas["UpdateTime"],datas["PicUrl"])
+
+            elif datas["Table"] == "group":
+                sql = ("INSERT INTO [dbo].[uber_group_info] "
+                       "([UGName], [UGArea], [RewardContent], [InTime], [InBest], [CreateTime]) "
+                       "VALUES (?,?,?,?,?,?)")
+                data = (datas["UGName"],datas["UGArea"],datas["RewardContent"],datas["InTime"],datas["InBest"],datas["CreateTime"])
             try:
                 r = cursor.execute(sql,data)
 

@@ -52,6 +52,7 @@ try:
         datas["UUpdatedAt"] = jsonv["updatedAt"]
         datas["CreateTime"] = int(time.time())
         datas["UpdateTime"] = int(time.time())
+        datas["Table"] = "msg"
 ##
         # datas["ObjectID"] = "56c9514e2e958a0059100fd1"
         #发送请求获取图片内容
