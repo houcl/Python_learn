@@ -2,7 +2,7 @@
 
 import requests
 import json
-import re
+
 import mssql_deal
 import uber_everyday_info_regex
 import time
@@ -52,9 +52,15 @@ try:
 
 
     mssql = mssql_deal.MSsqlDeal()
-        
-    insert_data_state = mssql.insert_(datas)
-    logging.info("高端处理结果"+insert_data_state)
+
+    select_data_state = mssql.select_(datas)
+    if select_data_state == 0:
+        insert_data_state = mssql.insert_(datas)
+        logging.info(insert_data_state)
+    else:
+        pass
+
+
 
     #获取电动车组的数据
     uber_company_html =requests.post(uber_every_company_url, data=json.dumps(uber_every_company_data),headers=uber_every_headers,verify=False)
@@ -64,8 +70,15 @@ try:
 	
     datas = my_regex.regex_(uber_company_html_json)#添加数据，获取结果
 
-    insert_data_state = mssql.insert_(datas)
-    logging.info("电动车处理结果"+insert_data_state)
+    select_data_state = mssql.select_(datas)
+    if select_data_state == 0:
+        insert_data_state = mssql.insert_(datas)
+        logging.info(insert_data_state)
+    else:
+        pass
+
+
+    print("Ok")
 
 
 

@@ -8,7 +8,7 @@ connection = pyodbc.connect(
 	
 class MSsqlDeal(object):
 
-    def select_(self,data):
+    def select_(self,datas):
         #数据处理
         #connection.commit()
         
@@ -16,13 +16,24 @@ class MSsqlDeal(object):
 
         with connection.cursor() as cursor:
             #sql = "INSERT INTO `removesingle` (`CommodityIDList`) VALUES (%s)"
-            sql = "SELECT * FROM [dbo].[uber_msg] WHERE UMsgID = ?"
+            #sql = "SELECT * FROM [dbo].[uber_msg] WHERE UMsgID = ?"
+            sql = ""
+            data = ""
+            if datas["Table"] == "msg":
+                sql = "SELECT * FROM [dbo].[uber_msg] WHERE ObjectID = ?"
+                data = datas["ObjectID"]
+            elif datas["Table"] == "group":
+                sql = "SELECT * FROM [dbo].[uber_group_info] WHERE RewardContent = ?"
+                data = datas["RewardContent"]
+            
             try:
                 r = cursor.execute(sql,data).fetchall()
-               
                 print(r)
-                
-                return r
+                if r is None:
+                    return 0
+                else :
+                    return 1
+
             except Exception as r:
                 print(r)
                 return r
@@ -63,6 +74,8 @@ class MSsqlDeal(object):
                 return cursor.rowcount
             
             connection.close()
+
+
 
          # main函数
 if __name__ == "__main__":
