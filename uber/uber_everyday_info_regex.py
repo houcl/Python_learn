@@ -7,6 +7,7 @@ datas = {}
 
 class Uber_EveryDay(object):
     def regex_(self,source_html):
+        print(source_html)
         RUGName = "<br/>用户组：(?P<UGName>.+?)（"
         RInTime = "（适用于(?P<InTime>.+?日)）<br/>"
         RArea = "【优步(?P<Area>[^<]+?)奖励政策】"
