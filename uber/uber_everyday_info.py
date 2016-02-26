@@ -61,7 +61,7 @@ try:
 
     uber_company_html_json = json.loads(uber_company_html.text)["result"]
     logging.info(uber_company_html_json)
-
+	
     datas = my_regex.regex_(uber_company_html_json)#添加数据，获取结果
 
     insert_data_state = mssql.insert_(datas)
