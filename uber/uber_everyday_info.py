@@ -45,7 +45,7 @@ try:
     uber_mobile_html = requests.post(uber_every_mobile_url, data=json.dumps(uber_every_mobile_data),headers=uber_every_headers,verify=False)
 
     uber_mobile_html_json = json.loads(uber_mobile_html.text)["result"]
-    logging.info("高端获取的数据"+uber_mobile_html_json)
+    logging.info(uber_mobile_html_json)
     #类初始化
     my_regex = uber_everyday_info_regex.Uber_EveryDay()
     datas = my_regex.regex_(uber_mobile_html_json)#添加数据，获取结果
@@ -60,7 +60,7 @@ try:
     uber_company_html =requests.post(uber_every_company_url, data=json.dumps(uber_every_company_data),headers=uber_every_headers,verify=False)
 
     uber_company_html_json = json.loads(uber_company_html.text)["result"]
-    logging.info("电动车获取的数据"+uber_company_html_json)
+    logging.info(uber_company_html_json)
 
     datas = my_regex.regex_(uber_company_html_json)#添加数据，获取结果
 
