@@ -22,7 +22,7 @@ logging.basicConfig(level = logging.INFO,
 
 
 #高端组
-uber_every_mobile_data = {"phone":"13911020483","_ApplicationId":"jr33ks0cxx959koggypfvdaenvrv1ir0jtv4q37qwuzes8s4","_ApplicationKey":"jql3k3dgaerg4dsa81tntklw07pz4hb4yg1s2thmxxa0ty0v","_ClientVersion":"js0.5.1","_InstallationId":"ea974bce-e9e6-9df7-31ba-d1a3e85a06e8","_SessionToken":"oxim2j6ypurh7p8gzom0i5zx1"}
+uber_every_mobile_data = {"phone":"15222226292","_ApplicationId":"jr33ks0cxx959koggypfvdaenvrv1ir0jtv4q37qwuzes8s4","_ApplicationKey":"jql3k3dgaerg4dsa81tntklw07pz4hb4yg1s2thmxxa0ty0v","_ClientVersion":"js0.5.1","_InstallationId":"ea974bce-e9e6-9df7-31ba-d1a3e85a06e8","_SessionToken":"oxim2j6ypurh7p8gzom0i5zx1"}
 uber_every_mobile_url = "https://cn.avoscloud.com/1.1/functions/mobile_querCompanyGroup"
 
 
