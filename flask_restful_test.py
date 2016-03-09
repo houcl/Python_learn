@@ -7,6 +7,7 @@ import time
 import re
 
 import mysql_deal
+import rgb_deal
 
 app = Flask(__name__)
 api = restful.Api(app)# 生成
@@ -118,12 +119,10 @@ class InsertCommodity(restful.Resource):
 
 
         #添加至数据库
-        insert_commodityID = self.mysqlDeal.all_deal("insert_commodity",commodity_info)
-        rt = {"state":"%s" %insert_commodityID}
-        print(rt)
+        #insert_commodityID = self.mysqlDeal.all_deal("insert_commodity",commodity_info)
 
-        if insert_commodityID is None:
-            return "添加商品失败"
+        # if insert_commodityID is None:
+        #     return "添加商品失败"
 
 
         #添加商品参数
@@ -136,18 +135,19 @@ class InsertCommodity(restful.Resource):
             if args_commodityparameter.get(i) is "":
                 pass
             else:
-
+                self.rgb_deal = rgb_deal.RGBDeal()
                 lsdata = DataDeal.DotDeal(args_commodityparameter.get(i))
                 for edata in lsdata:
                     if "#" in edata:
-                        edata = DataDeal.HTMLColorToPILColor(edata)#颜色转换
+                        edata = self.rgb_deal.HTMLColorToPILColor(edata)#颜色转换
                     #
                     # commodity_parameter = {}
                     # commodity_parameter["CPName"] = str(i)
                     # commodity_parameter["CPValueID"] = int(edata) #需要特殊处理
                     # commodity_parameter["Score"] = 10 # 之后可能会去掉
                     # commodity_parameter["CommodityID"] = 99999 #insert_commodityID
-                    qw = (str(i), int(edata), 10, int(insert_commodityID))
+                    #qw = (str(i), int(edata), 10, int(insert_commodityID))
+                    qw = (str(i), int(edata), 10, int(9999))
                     list_cpf.append(qw)
             list_cp.extend(list_cpf)
 
@@ -167,62 +167,6 @@ class DataDeal(object):
             lsdata = []
             lsdata.append(data)
             return lsdata
-
-    #色彩转换
-    def RGBToHTMLColor(rgb_tuple):
-        """ convert an (R, G, B) tuple to #RRGGBB """
-
-        hexcolor = '#%02x%02x%02x' % rgb_tuple
-
-        # that's it! '%02x' means zero-padded, 2-digit hex values
-
-        return hexcolor
-
-    def HTMLColorToRGB(colorstring):
-        """ convert #RRGGBB to an (R, G, B) tuple """
-
-        colorstring = colorstring.strip()
-
-        if colorstring[0] == '#': colorstring = colorstring[1:]
-
-        if len(colorstring) != 6:
-            return ValueError, "input #%s is not in #RRGGBB format" % colorstring
-
-        r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:]
-        r, g, b = [int(n, 16) for n in (r, g, b)]
-
-        return (r, g, b)
-
-    def HTMLColorToPILColor(colorstring):
-        """ converts #RRGGBB to PIL-compatible integers"""
-
-        colorstring = colorstring.strip()
-
-        while colorstring[0] == '#': colorstring = colorstring[1:]
-        # get bytes in reverse order to deal with PIL quirk
-        colorstring = colorstring[-2:] + colorstring[2:4] + colorstring[:2]
-        # finally, make it numeric
-        color = int(colorstring, 16)
-
-        return color
-
-    def PILColorToRGB(pil_color):
-        """ convert a PIL-compatible integer into an (r, g, b) tuple """
-        hexstr = '%06x' % pil_color
-        # reverse byte order
-        r, g, b = hexstr[4:], hexstr[2:4], hexstr[:2]
-        r, g, b = [int(n, 16) for n in (r, g, b)]
-
-        return (r, g, b)
-
-    def PILColorToHTMLColor(pil_integer):
-        k = DataDeal.PILColorToRGB(pil_integer)
-        q = DataDeal.RGBToHTMLColor(k)
-        return q
-
-    def RGBToPILColor(rgb_tuple):
-        return HTMLColorToPILColor(RGBToHTMLColor(rgb_tuple))
-
 
 api.add_resource(HelloWorld, '/') # 设定路由
 api.add_resource(GetCommdityID, '/commodiyt') # 设定路由
