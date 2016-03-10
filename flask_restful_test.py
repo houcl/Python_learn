@@ -259,10 +259,12 @@ class SelectCommodity(restful.Resource):
         data["Value"] = CommodityID
         Commodity_Info = self.mysqlDeal.all_deal("select_commodity", data)
 
+        Re_data = {}
         if Commodity_Info == ():
             return "CommodityID不存在"
         elif Commodity_Info == -1:
             return "查询Commodity表出错"
+
 
         CParamte_Info = self.mysqlDeal.all_deal("select_commodityparameter", data)
 
@@ -271,6 +273,21 @@ class SelectCommodity(restful.Resource):
         elif CParamte_Info == -1:
             return "查询commodityparameter表出错"
 
+        self.rgb_deal = rgb_deal.RGBDeal()
+        CP_Data = {}
+        #处理参数表内容
+        for i in CParamte_Info:
+            #颜色处理
+            CPvalue = i.get("CPValueID")
+            if "色盘" in i.get("CPName"):
+                 CPvalue = self.rgb_deal.PILColorToHTMLColor(CPvalue)
+
+            if CP_Data.get(i.get("CPName")) is None:
+                CP_Data[i.get("CPName")] = str(CPvalue)
+            else:
+                CP_Data[i.get("CPName")] = str(CP_Data.get(i.get("CPName"))) +","+ str(CPvalue)
+
+        return {"data": {"商品信息": Commodity_Info, "商品参数": CP_Data}}
 
 class DataDeal(object):
     #逗号分隔

@@ -3,7 +3,7 @@
 class RGBDeal(object):
 
     #色彩转换
-    def RGBToHTMLColor(self, rgb_tuple):
+    def RGBToHTMLColor(rgb_tuple):
         """ convert an (R, G, B) tuple to #RRGGBB """
 
         hexcolor = '#%02x%02x%02x' % rgb_tuple
@@ -40,7 +40,7 @@ class RGBDeal(object):
 
         return color
 
-    def PILColorToRGB(self, pil_color):
+    def PILColorToRGB(pil_color):
         """ convert a PIL-compatible integer into an (r, g, b) tuple """
         hexstr = '%06x' % pil_color
         # reverse byte order
@@ -50,8 +50,8 @@ class RGBDeal(object):
         return (r, g, b)
 
     def PILColorToHTMLColor(self, pil_integer):
-        k = DataDeal.PILColorToRGB(pil_integer)
-        q = DataDeal.RGBToHTMLColor(k)
+        k = RGBDeal.PILColorToRGB(pil_integer)
+        q = RGBDeal.RGBToHTMLColor(k)
         return q
 
     def RGBToPILColor(self, rgb_tuple):
