@@ -13,7 +13,7 @@ app = Flask(__name__)
 api = restful.Api(app)# 生成
 
 parser = reqparse.RequestParser()
-parser.add_argument('commodiyt', type=str, help='我也不知道说啥')
+parser.add_argument('commodityid', type=str, help='我也不知道说啥')
 parser.add_argument('data', type=str, help='Rate to charge for this resource')
 
 @app.route('/index')
@@ -36,7 +36,7 @@ class HelloWorld(restful.Resource):
 class GetCommdityID(restful.Resource):
     def get(self):
         args = parser.parse_args()
-        commodity = args["commodiyt"]
+        commodity = args["commodityid"]
 
         print(commodity)
 
@@ -89,40 +89,28 @@ class InsertCommodity(restful.Resource):
         args_commodity = args_json["商品信息"]
         args_commodityparameter = args_json["商品参数"]
 
-
-        #切出来商品信息
-        commodity_info["CategoryID"] = args_commodity["CategoryID"]
-        commodity_info["CommodityURL"] = args_commodity["CommodityURL"]
-        commodity_info["Operation"] = args_commodity["Operation"]
-        commodity_info["CreateTime"] = int(time.time())
-        commodity_info["CommodityName"] = args_commodity["CommodityName"]
-        commodity_info["CommodityByname"] = args_commodity["CommodityName"]
-        commodity_info["TaobaoID"] = re.search(RTaobaoID, args_commodity["CommodityURL"]).group("TaobaoID") #特殊处理
-        commodity_info["OpenIID"] = args_commodity["OpenIID"]
-        commodity_info["PicURL"] = args_commodity["PicURL"]
-        commodity_info["Price"] = args_commodity["Price"]
-        commodity_info["Delete"] = 0
-        commodity_info["OffShelf"] = args_commodity["OffShelf"]
-        commodity_info["PStatus"] = args_commodity["PStatus"]
-        commodity_info["CollectNum"] = 0
-
         self.mysqlDeal = mysql_deal.MysqlDeal()
 
         #商品唯一性判断
         try:
-            HaveCommodityID = self.mysqlDeal.all_deal("select_commodity", commodity_info["TaobaoID"])
-            if HaveCommodityID == 1:
-                return "商品ID重复"
+            data = {}
+            data["Name"] = "TaobaoID"
+            data["Value"] = re.search(RTaobaoID, args_commodity["CommodityURL"]).group("TaobaoID")
+            HaveCommodityID = self.mysqlDeal.all_deal("select_commodity", data)
+            if HaveCommodityID == ():
+                pass
+            elif HaveCommodityID >= 0:
+                return "商品ID重复，已经存在的ID为："+str(HaveCommodityID[0].get("CommodityID"))
         except Exception as e:
             return "数据库链接错误"+e
 
 
 
         #添加至数据库
-        #insert_commodityID = self.mysqlDeal.all_deal("insert_commodity",commodity_info)
+        insert_commodityID = self.mysqlDeal.all_deal("insert_commodity",commodity_info)
 
-        # if insert_commodityID is None:
-        #     return "添加商品失败"
+        if insert_commodityID is None:
+            return "添加商品失败"
 
 
         #添加商品参数
@@ -140,21 +128,148 @@ class InsertCommodity(restful.Resource):
                 for edata in lsdata:
                     if "#" in edata:
                         edata = self.rgb_deal.HTMLColorToPILColor(edata)#颜色转换
-                    #
-                    # commodity_parameter = {}
-                    # commodity_parameter["CPName"] = str(i)
-                    # commodity_parameter["CPValueID"] = int(edata) #需要特殊处理
-                    # commodity_parameter["Score"] = 10 # 之后可能会去掉
-                    # commodity_parameter["CommodityID"] = 99999 #insert_commodityID
-                    #qw = (str(i), int(edata), 10, int(insert_commodityID))
-                    qw = (str(i), int(edata), 10, int(9999))
+                    qw = (str(i), int(edata), 10, int(insert_commodityID))
                     list_cpf.append(qw)
             list_cp.extend(list_cpf)
 
         insert_commodity_parameter = self.mysqlDeal.all_deal("insert_commodityparameter",list_cp)
-        print(insert_commodity_parameter)
+        # print(insert_commodity_parameter)
 
-        return insert_commodity_parameter
+        return {"CommodityID": insert_commodityID, "InsertCount": insert_commodity_parameter}
+
+class DeleteCommodity(restful.Resource):
+
+    def post(self):
+        args = parser.parse_args()
+        CommodityID = args["commodityid"]
+
+        self.mysqlDeal = mysql_deal.MysqlDeal()
+        #查询是否存在
+        data = {}
+        data["Name"] = "CommodityID"
+        data["Value"] = CommodityID
+        IsTrue = self.mysqlDeal.all_deal("select_commodity", data)
+
+        if IsTrue == ():
+            return "CommodityID不存在"
+
+        #更改Commodity表状态
+        IsDelete = self.mysqlDeal.all_deal("delete_commodity", CommodityID)
+
+        if IsDelete == -1:
+            return "Commodity表处理失败"
+        elif IsDelete == 0:
+            return "Commodity表没有改变，可能是该商品之前已经删除了"
+
+
+        #删除CommodityParamter表内容
+        IsDelete_CP = self.mysqlDeal.all_deal("delete_commodityparameter", CommodityID)
+        if IsDelete_CP == 0:
+            return "CommodityParameter表中不存在该CommodityID的商品"
+        elif IsDelete_CP == -1:
+            return "CommodityParameter表删除失败"
+
+        #返回状态
+        return "删除成功，共删除%s条。" % IsDelete_CP
+
+
+class UpdateCommodity(restful.Resource):
+    def post(self):
+        args = parser.parse_args()
+        args_json = ""
+        try:
+            args_json = json.loads(args["data"].replace("'", "\""))#此处特殊注意，需要将获取到的json中的单引号，转化成双引号
+        except Exception as e:
+            print(e)
+
+        RTaobaoID = "id=(?P<TaobaoID>\d+)"
+
+        args_commodity = args_json["商品信息"]
+        args_commodityparameter = args_json["商品参数"]
+
+
+
+        self.mysqlDeal = mysql_deal.MysqlDeal()
+
+        #查看是否存在
+        data = {}
+        data["Name"] = "CommodityID"
+        data["Value"] = args_commodity["CommodityID"]
+        IsTrue = self.mysqlDeal.all_deal("select_commodity", data)
+
+        if IsTrue == ():
+            return "CommodityID不存在"
+
+
+        sqlf = ""
+        for i in args_commodity:
+            if args_commodity.get(i) == "":
+                pass
+            else:
+                sqlf = sqlf +"`"+ i +"`='"+str(args_commodity.get(i))+"',"
+
+
+
+        #更新Commodity表内容，主要的
+        sql = "UPDATE `commodity` SET "+ sqlf.rstrip(",") +" WHERE (`CommodityID`=%s)" % args_commodity["CommodityID"]
+
+        Update_Commodity = self.mysqlDeal.all_deal("update_commodity", sql)
+
+        if Update_Commodity == -1:
+            return "更新Commodity表失败"
+
+        #删除CommodityParamter表内容
+        IsDelete_CP = self.mysqlDeal.all_deal("delete_commodityparameter", args_commodity["CommodityID"])
+        if IsDelete_CP == 0:
+            return "CommodityParameter表中不存在该CommodityID的商品"
+        elif IsDelete_CP == -1:
+            return "CommodityParameter表删除失败"
+
+
+        #取Json中的数据，添加CommodityParamter表内容
+        list_cp = []
+        for i in args_commodityparameter:
+            list_cpf = []
+            if args_commodityparameter.get(i) is "":
+                pass
+            else:
+                self.rgb_deal = rgb_deal.RGBDeal()
+                lsdata = DataDeal.DotDeal(args_commodityparameter.get(i))
+                for edata in lsdata:
+                    if "#" in edata:
+                        edata = self.rgb_deal.HTMLColorToPILColor(edata)#颜色转换
+                    qw = (str(i), int(edata), 10, int(args_commodity["CommodityID"]))
+                    list_cpf.append(qw)
+            list_cp.extend(list_cpf)
+
+        insert_commodity_parameter = self.mysqlDeal.all_deal("insert_commodityparameter",list_cp)
+        print("共添加%s个商品参数" % insert_commodity_parameter)
+
+        return "修改成功"
+
+class SelectCommodity(restful.Resource):
+   def post(self):
+        args = parser.parse_args()
+        CommodityID = args["commodityid"]
+
+        self.mysqlDeal = mysql_deal.MysqlDeal()
+        #查询是否存在
+        data = {}
+        data["Name"] = "CommodityID"
+        data["Value"] = CommodityID
+        Commodity_Info = self.mysqlDeal.all_deal("select_commodity", data)
+
+        if Commodity_Info == ():
+            return "CommodityID不存在"
+        elif Commodity_Info == -1:
+            return "查询Commodity表出错"
+
+        CParamte_Info = self.mysqlDeal.all_deal("select_commodityparameter", data)
+
+        if CParamte_Info == ():
+            return "commodityparameter表中CommodityID不存在"
+        elif CParamte_Info == -1:
+            return "查询commodityparameter表出错"
 
 
 class DataDeal(object):
@@ -172,7 +287,9 @@ api.add_resource(HelloWorld, '/') # 设定路由
 api.add_resource(GetCommdityID, '/commodiyt') # 设定路由
 api.add_resource(GetWeb, '/getweb') # 设定路由
 api.add_resource(InsertCommodity, '/add') # 设定路由
-
+api.add_resource(DeleteCommodity, '/del') # 设定路由
+api.add_resource(UpdateCommodity, '/upd') # 设定路由
+api.add_resource(SelectCommodity, '/sel') # 设定路由
 
 if __name__ == '__main__':
     #app.run(debug=True)
