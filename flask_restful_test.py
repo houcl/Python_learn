@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 from flask import Flask, request, render_template
 from flask.ext import restful
 from flask.ext.restful import Resource, Api,reqparse
