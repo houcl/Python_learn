@@ -13,6 +13,7 @@ import rgb_deal
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
+#引自：http://blog.sina.com.cn/s/blog_6c39196501013s5b.html
 
 app = Flask(__name__)
 api = restful.Api(app)# 生成
@@ -343,6 +344,6 @@ api.add_resource(UpdateCommodity, '/api/upd') # 设定路由
 api.add_resource(SelectCommodity, '/api/sel') # 设定路由
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
 
-    #app.run(host='123.56.249.33', port=86)
+    app.run(host='123.56.249.33', port=86)
