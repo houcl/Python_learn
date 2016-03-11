@@ -63,11 +63,11 @@ class MysqlDeal(object):
             return
         #数据处理
         with self.conn.cursor() as cursor:
-            sql = u"INSERT INTO `commodity` (`CategoryID`, `CommodityName`, `CommodityByname`, `CommodityURL`, `Operation`, `TaobaoID`, `OpenIID`, `PicURL`, `Price`, `Delete`, `OffShelf`, `PStatus`, `CreateTime`, `CollectNum`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+            #sql = "INSERT INTO `commodity` (`CategoryID`, `CommodityName`, `CommodityByname`, `CommodityURL`, `Operation`, `TaobaoID`, `OpenIID`, `PicURL`, `Price`, `Delete`, `OffShelf`, `PStatus`, `CreateTime`, `CollectNum`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" %  (data["CategoryID"], data["CommodityName"], data["CommodityByname"], data["CommodityURL"], data["Operation"], data["TaobaoID"], data["OpenIID"], data["PicURL"], data["Price"], data["Delete"], data["OffShelf"], data["PStatus"], data["CreateTime"], data["CollectNum"])
+            sql = data
             try:
-                r = cursor.execute(sql, (data["CategoryID"], data["CommodityName"], data["CommodityByname"], data["CommodityURL"], data["Operation"], data["TaobaoID"], data["OpenIID"], data["PicURL"], data["Price"], data["Delete"], data["OffShelf"], data["PStatus"], data["CreateTime"], data["CollectNum"]))
+                cursor.execute(sql)
                 self.conn.commit()
-                print(r)
                 result = cursor.lastrowid #生成的ID
 
                 return result

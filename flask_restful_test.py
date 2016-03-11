@@ -96,18 +96,31 @@ class InsertCommodity(restful.Resource):
             data = {}
             data["Name"] = "TaobaoID"
             data["Value"] = re.search(RTaobaoID, args_commodity["CommodityURL"]).group("TaobaoID")
+            TaobaoID = str(data["Value"])
             HaveCommodityID = self.mysqlDeal.all_deal("select_commodity", data)
             if HaveCommodityID == ():
                 pass
-            elif HaveCommodityID >= 0:
-                return "商品ID重复，已经存在的ID为："+str(HaveCommodityID[0].get("CommodityID"))
+            elif HaveCommodityID[0].get("CommodityID") >= 0:
+                return "商品的淘宝ID重复，已经存在的商品ID为："+str(HaveCommodityID[0].get("CommodityID"))
         except Exception as e:
             return "数据库链接错误"+e
 
 
+        commodity_sql_f = ""
+        commodity_sql_l = ""
 
         #添加至数据库
-        insert_commodityID = self.mysqlDeal.all_deal("insert_commodity",commodity_info)
+        for i in args_commodity:
+            Pvalue = str(args_commodity.get(i))
+            if i != "CommodityID":
+                if i == "TaobaoID":
+                    Pvalue = TaobaoID
+                commodity_sql_f = commodity_sql_f + "`" + i + "`,"
+                commodity_sql_l = commodity_sql_l + "'" + Pvalue + "',"
+
+        commodity_sql = "INSERT INTO `commodity` ("+commodity_sql_f.rstrip(",")+") VALUES ("+commodity_sql_l.rstrip(",")+")"
+
+        insert_commodityID = self.mysqlDeal.all_deal("insert_commodity", commodity_sql)
 
         if insert_commodityID is None:
             return "添加商品失败"
@@ -203,10 +216,15 @@ class UpdateCommodity(restful.Resource):
 
         sqlf = ""
         for i in args_commodity:
+            Cvalue = str(args_commodity.get(i))
             if args_commodity.get(i) == "":
                 pass
+            if i == "CommodityID":
+                pass
             else:
-                sqlf = sqlf +"`"+ i +"`='"+str(args_commodity.get(i))+"',"
+                if i == "TaobaoID":
+                    Cvalue = re.search(RTaobaoID, args_commodity["CommodityURL"]).group("TaobaoID")
+                sqlf = sqlf +"`"+ i +"`='"+Cvalue+"',"
 
 
 
@@ -249,8 +267,12 @@ class UpdateCommodity(restful.Resource):
 
 class SelectCommodity(restful.Resource):
    def post(self):
-        args = parser.parse_args()
-        CommodityID = args["commodityid"]
+        try:
+            args = parser.parse_args()
+            CommodityID = int(args["commodityid"])
+        except:
+            return "输入的参数错误，不为数字"
+
 
         self.mysqlDeal = mysql_deal.MysqlDeal()
         #查询是否存在
@@ -259,7 +281,7 @@ class SelectCommodity(restful.Resource):
         data["Value"] = CommodityID
         Commodity_Info = self.mysqlDeal.all_deal("select_commodity", data)
 
-        Re_data = {}
+
         if Commodity_Info == ():
             return "CommodityID不存在"
         elif Commodity_Info == -1:
@@ -287,7 +309,9 @@ class SelectCommodity(restful.Resource):
             else:
                 CP_Data[i.get("CPName")] = str(CP_Data.get(i.get("CPName"))) +","+ str(CPvalue)
 
-        return {"data": {"商品信息": Commodity_Info, "商品参数": CP_Data}}
+        print(type(Commodity_Info))
+        print(type(CP_Data))
+        return {"data": {"商品信息": Commodity_Info[0], "商品参数": CP_Data}}
 
 class DataDeal(object):
     #逗号分隔
