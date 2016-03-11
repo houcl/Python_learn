@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 from flask import Flask, request, render_template
 from flask.ext import restful
@@ -12,6 +9,10 @@ import re
 
 import mysql_deal
 import rgb_deal
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 app = Flask(__name__)
 api = restful.Api(app)# 生成
@@ -342,6 +343,6 @@ api.add_resource(UpdateCommodity, '/api/upd') # 设定路由
 api.add_resource(SelectCommodity, '/api/sel') # 设定路由
 
 if __name__ == '__main__':
-    #app.run(debug=True)
+    app.run(debug=True)
 
-    app.run(host='123.56.249.33', port=86)
+    #app.run(host='123.56.249.33', port=86)
