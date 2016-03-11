@@ -298,16 +298,21 @@ class SelectCommodity(restful.Resource):
         self.rgb_deal = rgb_deal.RGBDeal()
         CP_Data = {}
         #处理参数表内容
-        for j in CParamte_Info:
-            #颜色处理
-            CPvalue = j.get("CPValueID")
-            if "色盘" in j.get("CPName"):
-                CPvalue = self.rgb_deal.PILColorToHTMLColor(CPvalue)
+        try:
+            for j in CParamte_Info:
+                #颜色处理
+                print(j)
+                CPvalue = j.get("CPValueID")
+                if "色盘" in j.get("CPName"):
+                    CPvalue = self.rgb_deal.PILColorToHTMLColor(CPvalue)
 
-            if CP_Data.get(j.get("CPName")) is None:
-                CP_Data[j.get("CPName")] = str(CPvalue)
-            else:
-                CP_Data[j.get("CPName")] = str(CP_Data.get(j.get("CPName"))) +","+ str(CPvalue)
+                if CP_Data.get(j.get("CPName")) is None:
+                    CP_Data[j.get("CPName")] = str(CPvalue)
+                else:
+                    CP_Data[j.get("CPName")] = str(CP_Data.get(j.get("CPName"))) +","+ str(CPvalue)
+                print(CP_Data[j.get("CPName")])
+        except Exception as e:
+            print(e)
 
         print(type(Commodity_Info))
         print(type(CP_Data))
@@ -333,6 +338,6 @@ api.add_resource(UpdateCommodity, '/api/upd') # 设定路由
 api.add_resource(SelectCommodity, '/api/sel') # 设定路由
 
 if __name__ == '__main__':
-    #app.run(debug=True)
+    app.run(debug=True)
 
-    app.run(host='123.56.249.33', port=86)
+    #app.run(host='123.56.249.33', port=86)
