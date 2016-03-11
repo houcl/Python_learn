@@ -53,7 +53,7 @@ class MysqlDeal(object):
             sql = u"INSERT INTO `dadiao`.`removesuit` (`CommodityIDList`) VALUES (%s);"
             try:
                 cursor.execute(sql,data)
-                connection.commit()
+                self.conn.commit()
                 return cursor.rowcount
             except Exception as r:
                 return r

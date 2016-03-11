@@ -43,13 +43,13 @@ class GetCommdityID(restful.Resource):
         self.mysqlDeal = mysql_deal.MysqlDeal()
         #字符串解析
         
-        datas["CommodityIDList"]= commodiyt
-        dataL = commodiyt.split(",") # 字符串切分
+        datas["CommodityIDList"]= commodity
+        dataL = commodity.split(",") # 字符串切分
         dataL.sort(key = int) # 按照int方式 进行排序
         data = ','.join(dataL) # 字符串拼接
 
         #调用数据库链接，添加数据
-        r = self.mysqlDeal.all_deal(insert_removesuit,data)
+        r = self.mysqlDeal.all_deal("insert_removesuit",data)
         rt = {"state":"%s"%r}
 
         return rt
