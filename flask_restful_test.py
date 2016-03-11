@@ -325,7 +325,7 @@ class DataDeal(object):
             return lsdata
 
 api.add_resource(HelloWorld, '/') # 设定路由
-api.add_resource(GetCommdityID, '/api/commodiyt') # 设定路由
+api.add_resource(GetCommdityID, '/api/commodity') # 设定路由
 api.add_resource(GetWeb, '/getweb') # 设定路由
 api.add_resource(InsertCommodity, '/api/add') # 设定路由
 api.add_resource(DeleteCommodity, '/api/del') # 设定路由
@@ -334,5 +334,5 @@ api.add_resource(SelectCommodity, '/api/sel') # 设定路由
 
 if __name__ == '__main__':
     #app.run(debug=True)
-    debug = True
+
     app.run(host='123.56.249.33', port=86)
