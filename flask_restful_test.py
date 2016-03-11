@@ -298,16 +298,16 @@ class SelectCommodity(restful.Resource):
         self.rgb_deal = rgb_deal.RGBDeal()
         CP_Data = {}
         #处理参数表内容
-        for i in CParamte_Info:
+        for j in CParamte_Info:
             #颜色处理
-            CPvalue = i.get("CPValueID")
-            if "色盘" in i.get("CPName"):
+            CPvalue = j.get("CPValueID")
+            if "色盘" in j.get("CPName"):
                 CPvalue = self.rgb_deal.PILColorToHTMLColor(CPvalue)
 
-            if CP_Data.get(i.get("CPName")) is None:
-                CP_Data[i.get("CPName")] = str(CPvalue)
+            if CP_Data.get(j.get("CPName")) is None:
+                CP_Data[j.get("CPName")] = str(CPvalue)
             else:
-                CP_Data[i.get("CPName")] = str(CP_Data.get(i.get("CPName"))) +","+ str(CPvalue)
+                CP_Data[j.get("CPName")] = str(CP_Data.get(j.get("CPName"))) +","+ str(CPvalue)
 
         print(type(Commodity_Info))
         print(type(CP_Data))
