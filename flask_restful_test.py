@@ -10,10 +10,6 @@ import re
 import mysql_deal
 import rgb_deal
 
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
-#引自：http://blog.sina.com.cn/s/blog_6c39196501013s5b.html
 
 app = Flask(__name__)
 api = restful.Api(app)# 生成
