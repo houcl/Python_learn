@@ -302,7 +302,7 @@ class SelectCommodity(restful.Resource):
             #颜色处理
             CPvalue = i.get("CPValueID")
             if "色盘" in i.get("CPName"):
-                 CPvalue = self.rgb_deal.PILColorToHTMLColor(CPvalue)
+                CPvalue = self.rgb_deal.PILColorToHTMLColor(CPvalue)
 
             if CP_Data.get(i.get("CPName")) is None:
                 CP_Data[i.get("CPName")] = str(CPvalue)
