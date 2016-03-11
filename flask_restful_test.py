@@ -338,6 +338,6 @@ api.add_resource(UpdateCommodity, '/api/upd') # 设定路由
 api.add_resource(SelectCommodity, '/api/sel') # 设定路由
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
 
-    #app.run(host='123.56.249.33', port=86)
+    app.run(host='123.56.249.33', port=86)
