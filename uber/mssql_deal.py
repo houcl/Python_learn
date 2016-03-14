@@ -27,9 +27,9 @@ class MSsqlDeal(object):
                 data = datas["RewardContent"]
             
             try:
-                r = cursor.execute(sql,data).fetchall()
-                print(r)
-                if r is None:
+                cursor.execute(sql,data).fetchall()
+                print(cursor.rowcount)
+                if cursor.rowcount == 0:
                     return 0
                 else :
                     return 1
